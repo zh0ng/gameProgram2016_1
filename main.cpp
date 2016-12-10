@@ -30,7 +30,8 @@ void init()
 	glShadeModel(GL_FLAT);
 }
 
-void drawPlanet(GLfloat r, GLfloat g, GLfloat b, GLfloat torus_radius, GLfloat angularSpeed, GLfloat radius)
+void drawPlanet(GLfloat r, GLfloat g, GLfloat b, GLfloat torus_radius, GLfloat angularSpeed, 
+	            GLfloat radius, void (*fun)() = NULL)
 {
 	glPushMatrix();
 	glColor3f(r, g, b);
@@ -43,7 +44,21 @@ void drawPlanet(GLfloat r, GLfloat g, GLfloat b, GLfloat torus_radius, GLfloat a
 	// 设置公转半径
 	glTranslatef(torus_radius, 0.0, 0.0);
 	solidSphere(radius);
+	if (fun != NULL)
+		fun();
 	glPopMatrix();
+}
+
+// 绘制地球的卫星-月亮
+void drawMoon()
+{
+	glColor3f(0.5, 0.6, 0.5);
+	// 设置月亮公转速度
+	glRotatef(rot9, 0.0, 1.0, 0.0);
+	// 设置月亮公转半径
+	glTranslatef(0.6, 0.0, 0.0);
+	// 绘制月亮
+	solidSphere(0.1, 10, 8);
 }
 
 void display()
@@ -59,34 +74,9 @@ void display()
 	// 绘制太阳
 	glColor3f(1.0, 0.0, 0.0);
 	solidSphere(2.0);
+	
 	// 绘制地球
-	glPushMatrix();
-	glColor3f(0.0, 0.0, 1.0);
-	// 绘制辅助轨道
-	glRotatef(90, 1.0, 0, 0.0);
-	glutSolidTorus(INNER_TORUS_RADIUS, 5.0, 10, 64);
-	glRotatef(-90, 1.0, 0, 0.0);
-	// 设置地球公转速度
-	glRotatef(rot0, 0.0, 1.0, 0.0);
-	// 设置地球半径
-	glTranslatef(5.0, 0.0, 0.0);
-	// 设置地球自转速度
-	//glRotatef(rot1,0.0,1.0,0.0);
-	// 绘制地球
-	solidSphere(0.4);
-
-	// 绘制地球的卫星-月亮
-	glColor3f(0.5, 0.6, 0.5);
-	// 抵消地球自转影响
-	//glRotatef(-rot1,0.0,1.0,0.0);
-
-	// 设置月亮公转速度
-	glRotatef(rot9, 0.0, 1.0, 0.0);
-	// 设置月亮公转半径
-	glTranslatef(0.6, 0.0, 0.0);
-	// 绘制月亮
-	solidSphere(0.1, 10, 8);
-	glPopMatrix();
+	drawPlanet(0.0, 0.0, 1.0, 5.0, rot0, 0.4, drawMoon);
 
 	// 绘制水星
 	drawPlanet(0.0, 1.0, 1.0, 2.5, rot1, 0.2);
