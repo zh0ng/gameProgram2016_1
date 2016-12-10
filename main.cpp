@@ -31,7 +31,7 @@ void init()
 }
 
 void drawPlanet(GLfloat r, GLfloat g, GLfloat b, GLfloat torus_radius, GLfloat angularSpeed, 
-	            GLfloat radius, void (*fun)() = NULL)
+                GLfloat radius, void (*fun)() = NULL)
 {
 	glPushMatrix();
 	glColor3f(r, g, b);
@@ -59,6 +59,14 @@ void drawMoon()
 	glTranslatef(0.6, 0.0, 0.0);
 	// 绘制月亮
 	solidSphere(0.1, 10, 8);
+}
+
+// 绘制土星光环
+void drawSaturnRing()
+{
+	glRotatef(90, 1.0, 0, 0.0);
+	glutSolidTorus(0.1, 1.25, 10, 64);
+	glutSolidTorus(0.07, 1.65, 10, 64);
 }
 
 void display()
@@ -91,30 +99,7 @@ void display()
 	drawPlanet(1.0, 0.1, 1.0, 8.5, rot4, 1.0);
 
 	// 绘制土星
-	glPushMatrix();
-	glColor3f(1.0f, 1.0f, 0.0f);
-	// 绘制辅助轨道
-	glRotatef(90, 1.0, 0, 0.0);
-	glutSolidTorus(INNER_TORUS_RADIUS, 12.5, 10, 64);
-	glRotatef(-90, 1.0, 0, 0.0);
-	// 设置土星公转速度
-	glRotatef(rot5, 0.0, 0.4, 0.0);
-	// 设置土星公转半径
-	glTranslatef(12.5, 0.0, 0.0);
-	// 设置土星自传
-	glRotatef(rot3, 0.0, 0.3, 0.0);
-	// 绘制土星
-	solidSphere(0.85);
-
-	// 绘制土星光环
-	glRotatef(90, 1.0, 0, 0.0);
-	glutSolidTorus(0.1, 1.25, 10, 64);
-	glRotatef(-90, 1.0, 0, 0.0);
-	glRotatef(90, 1.0, 0, 0.0);
-
-	glutSolidTorus(0.07, 1.65, 10, 64);
-	glRotatef(-90, 1.0, 0, 0.0);
-	glPopMatrix();
+	drawPlanet(1.0, 1.0, 0.0, 12.5, rot5, 0.85, drawSaturnRing);
 
 	// 绘制天王星
 	drawPlanet(0.0, 1.0, 1.0, 15.5, rot6, 0.15);
