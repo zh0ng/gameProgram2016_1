@@ -3,9 +3,14 @@
 #include <stdlib.h>
 #include "gl/glut.h"
 
+// 轨道宽度
+const GLfloat INNER_TORUS_RADIUS = 0.02;
+
 GLfloat originX = 0.0;
 GLfloat originY = 0.0;
 GLfloat originZ = -20.0;
+
+GLfloat speedRatio = 1.0;
 
 // 行星
 GLfloat rot0 = 0.0;
@@ -18,9 +23,6 @@ GLfloat rot6 = 0.0;
 GLfloat rot7 = 0.0;
 GLfloat rot8 = 0.0;
 GLfloat rot9 = 0.0;
-
-// 轨道宽度
-const GLfloat INNER_TORUS_RADIUS = 0.02;
 
 void solidSphere(GLdouble radius, GLint slices = 32, GLint stacks = 32)
 {
@@ -77,12 +79,12 @@ void display()
 	glColor3f(1.0, 0.0, 0.0);
 	solidSphere(2.0);
 	
-	// 地球
-	drawPlanet(0.0, 0.0, 1.0, 5.0, rot0, 0.4, drawMoon);
 	// 水星
-	drawPlanet(0.0, 1.0, 1.0, 2.5, rot1, 0.2);
+	drawPlanet(0.0, 1.0, 1.0, 2.5, rot0, 0.2);
 	// 金星
-	drawPlanet(0.0, 1.0, 0.0, 3.4, rot2, 0.3);
+	drawPlanet(0.0, 1.0, 0.0, 3.4, rot1, 0.3);
+	// 地球
+	drawPlanet(0.0, 0.0, 1.0, 5.0, rot2, 0.4, drawMoon);
 	// 火星
 	drawPlanet(1.0, 0.0, 0.0, 6.6, rot3, 0.5);
 	// 木星
@@ -102,16 +104,16 @@ void display()
 
 void rotate(GLfloat& rot, GLfloat angle)
 {
-	rot += angle;
+	rot += angle * speedRatio;
 	if (rot >= 360.0)
 		rot -= 360.0;
 }
 
 void idle()
 {
-	rotate(rot0, 0.1);
-	rotate(rot1, 0.416);
-	rotate(rot2, 0.1631);
+	rotate(rot2, 0.1);
+	rotate(rot0, 0.416);
+	rotate(rot1, 0.1631);
 	rotate(rot3, 0.053);
 	rotate(rot4, 0.0083);
 	rotate(rot5, 0.0034);
@@ -134,21 +136,27 @@ void reshape(int w, int h)
 
 void onSpecialKeyDown(int key, int x, int y)
 {
-	if (key == 101)
+	printf("%d\n", key);
+	switch(key) 
 	{
+	case 101:
 		originY -= 0.2;
-	}
-	else if (key == 103)
-	{
+		break;
+	case 103:
 		originY += 0.2;
-	}
-	else if (key == 100)
-	{
+		break;
+	case 100:
 		originX += 0.2;
-	}
-	else if (key == 102)
-	{
+		break;
+	case 102:
 		originX -= 0.2;
+		break;
+	case 104:
+		speedRatio += 0.1;
+		break;
+	case 105:
+		speedRatio -= 0.1;
+		break;
 	}
 }
 
@@ -161,6 +169,10 @@ void onNormalKeyDown(unsigned char key, int x, int y)
 	else if (key == '=')
 	{
 		originZ += 0.2;
+	}
+	else if (key == 27)
+	{
+		exit(0);
 	}
 }
 
