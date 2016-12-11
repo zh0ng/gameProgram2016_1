@@ -7,10 +7,12 @@
 const GLfloat INNER_TORUS_RADIUS = 0.02;
 
 GLfloat originX = 0.0;
-GLfloat originY = 0.0;
-GLfloat originZ = -20.0;
+GLfloat originY = 4.0;
+GLfloat originZ = -22.0;
 
 GLfloat speedRatio = 1.0;
+
+GLfloat originAngle = -55.0;
 
 // 行星
 GLfloat rot0 = 0.0;
@@ -74,7 +76,7 @@ void display()
 	glLoadIdentity();
 
 	glTranslatef(originX, originY, originZ);
-	glRotatef(90.0, 1.0, 0.0, 0);
+	glRotatef(90.0 + originAngle, 1.0, 0.0, 0);
 	// 太阳
 	glColor3f(1.0, 0.0, 0.0);
 	solidSphere(2.0);
@@ -136,8 +138,8 @@ void reshape(int w, int h)
 
 void onSpecialKeyDown(int key, int x, int y)
 {
-	printf("%d\n", key);
-	switch(key) 
+	printf("key=%d\n", key);
+	switch (key) 
 	{
 	case 101:
 		originY -= 0.2;
@@ -152,27 +154,34 @@ void onSpecialKeyDown(int key, int x, int y)
 		originX -= 0.2;
 		break;
 	case 104:
-		speedRatio += 0.1;
+		originAngle += 1.5;
 		break;
 	case 105:
-		speedRatio -= 0.1;
+		originAngle -= 1.5;
 		break;
 	}
 }
 
 void onNormalKeyDown(unsigned char key, int x, int y)
 {
-	if (key == '-')
+	printf("key=%c\n", key);
+	switch (key) 
 	{
+	case '-':
 		originZ -= 0.2;
-	}
-	else if (key == '=')
-	{
+		break;
+	case '=':
 		originZ += 0.2;
-	}
-	else if (key == 27)
-	{
+		break;
+	case '[':
+		speedRatio -= 0.15;
+		break;
+	case ']':
+		speedRatio += 0.15;
+		break;
+	case 27:
 		exit(0);
+		break;
 	}
 }
 
@@ -183,7 +192,7 @@ void main(int argc, char **argv)
 	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowSize(900, 600);
 	glutInitWindowPosition(80, 80);
-	glutCreateWindow("九大行星运行模拟");
+	glutCreateWindow("九大行星模拟（方向键：平移，-=键：缩放，[]键：运行速度，PgDn/PgUp键：观察角度）");
 	
 	glutKeyboardFunc(onNormalKeyDown);
 	glutSpecialFunc(onSpecialKeyDown);
